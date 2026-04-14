@@ -1,0 +1,118 @@
+/* Import Google Fonts - Poppins (must be before @tailwind) */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Background */
+    --background: #f2f4f8;
+    --foreground: #1a1d2e;
+    --card: 0 0% 100%;
+    --card-foreground: #1a1d2e;
+    --popover: 0 0% 100%;
+    --popover-foreground: #1a1d2e;
+
+    /* Brand Colors - SpendWise */
+    --primary: 253 73% 81%; /* #827BF2 - Primary Purple */
+    --primary-hover: 253 73% 71%;
+    --primary-light: 253 100% 95%; /* #EAE8FD - Primary Light */
+    --primary-foreground: 0 0% 100%;
+
+    --pink: 339 81% 67%; /* #F66PAC - Chi tiêu */
+    --pink-light: 339 81% 95%;
+
+    --green: 146 57% 40%; /* #21AE5A - Thu nhập */
+    --green-light: 146 57% 95%;
+
+    --orange: 35 89% 60%; /* #F89C34 - Cảnh báo */
+    --orange-light: 35 89% 95%;
+
+    --yellow: 48 93% 50%; /* #F2CC00 */
+
+    --red: 357 80% 49%; /* #E40127 - Vượt ngân sách */
+    --red-light: 357 80% 95%;
+
+    --secondary: 230 25% 96%; /* #F2F4F8 - Background */
+    --secondary-foreground: #5a607f;
+    --tertiary-foreground: #5a607f;
+    --muted: 230 25% 96%;
+    --muted-foreground: #9ea3b8;
+    --accent: 230 25% 96%;
+    --accent-foreground: #1a1d2e;
+    --destructive: 357 80% 49%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Text Colors */
+    --text-dark: #1a1d2e; /* Tiêu đề, số liệu */
+    --text-mid: #5a607f; /* Label, mô tả */
+    --text-light: #9ea3b8; /* Placeholder, phụ */
+
+    /* Border */
+    --border: 230 14% 92%; /* #ECEAF0 - Light subtle border */
+
+    /* Layout */
+    --sidebar-width: 220px;
+    --sidebar-collapsed-width: 64px;
+    --right-panel-width: 280px;
+    --topbar-height: 64px;
+
+    --radius: 0.75rem;
+    --chart-1: 253 73% 81%;
+    --chart-2: 146 57% 40%;
+    --chart-3: 339 81% 67%;
+    --chart-4: 35 89% 60%;
+    --chart-5: 48 93% 50%;
+  }
+
+  .dark {
+    --background: 222 28% 10%;
+    --foreground: 210 40% 98%;
+    --card: 222 28% 14%;
+    --card-foreground: 210 40% 98%;
+    --primary: 253 73% 75%;
+    --primary-hover: 253 73% 85%;
+    --primary-foreground: 222 28% 10%;
+    --secondary: 222 28% 18%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 222 28% 18%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --border: 222 28% 22%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Poppins", sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  /* Input & Select - Light border */
+  input,
+  select,
+  .input-border {
+    border-color: hsl(var(--border));
+  }
+
+  /* Override border-input for lighter appearance */
+  .border-input {
+    border-color: hsl(var(--border)) !important;
+    opacity: 0.8;
+  }
+}

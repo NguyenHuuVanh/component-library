@@ -1,0 +1,98 @@
+---
+description: GEMINI.md - Antigravity Kit - Định nghĩa cách AI hoạt động trong workspace
+alwaysApply: true
+---
+
+# GEMINI.md - CRM Frontend Agent System
+
+Định nghĩa cách AI hoạt động trong workspace này.
+
+---
+
+## CRITICAL: AGENT & SKILL PROTOCOL
+
+> **MANDATORY:** Phải đọc agent file phù hợp và skills TRƯỚC KHI thực hiện bất kỳ implementation nào.
+
+### Modular Skill Loading Protocol
+
+1. Agent activated → Check frontmatter "skills:" → Read SKILL.md → Read specific sections
+2. **Selective Reading:** Không đọc tất cả files trong skill folder. Đọc `SKILL.md` trước, sau đó chỉ đọc sections phù hợp.
+3. **Rule Priority:** P0 (GEMINI.md) > P1 (Agent) > P2 (SKILL.md)
+
+---
+
+## REQUEST CLASSIFIER
+
+| Request Type | Trigger Keywords | Result |
+|--------------|-------------------|--------|
+| **QUESTION** | "what is", "how does", "explain" | Text Response |
+| **SURVEY/INTEL** | "analyze", "list files", "overview" | Session Intel |
+| **SIMPLE CODE** | "fix", "add", "change" (single file) | Inline Edit |
+| **COMPLEX CODE** | "build", "create", "implement" | Task plan required |
+| **DESIGN/UI** | "design", "UI", "page", "dashboard" | Task plan required |
+| **SLASH CMD** | /create, /orchestrate, /debug | Command-specific |
+
+---
+
+## TIER 0: UNIVERSAL RULES (Always Active)
+
+### 🌐 Language Handling
+
+- Internally translate cho better comprehension
+- **Respond in user's language** - match Vietnamese
+- Code comments/variables remain in English
+
+### 🧹 Clean Code (Global Mandatory)
+
+- **Code**: Concise, direct, no over-engineering
+- **Testing**: Mandatory. Pyramid (Unit > Int > E2E) + AAA Pattern
+- **Performance**: Measure first. Adhere to Core Web Vitals
+
+### 📁 File Dependency Awareness
+
+Trước khi modify file:
+1. Check dependencies
+2. Identify dependent files
+3. Update ALL affected files together
+
+---
+
+## TIER 1: CODE RULES (When Writing Code)
+
+### 📱 Project Type Routing
+
+| Project Type | Primary Agent | Skills |
+|--------------|---------------|--------|
+| **MOBILE** | `mobile-developer` | mobile-design |
+| **WEB** (Next.js, React) | `frontend-specialist` | react-best-practices |
+| **BACKEND** | `backend-specialist` | api-patterns, database-design |
+
+### 🛑 Socratic Gate
+
+Với complex requests, STOP và ASK trước:
+- Minimum 3 strategic questions
+- Confirm understanding + ask impact questions
+- Wait for user to clear Gate
+
+---
+
+## Final Checklist Protocol
+
+| Task Stage | Command | Purpose |
+|------------|---------|---------|
+| **Manual Audit** | `python .cursor/scripts/checklist.py .` | Priority-based project audit |
+| **Pre-Deploy** | `python .cursor/scripts/verify_all.py . --url <URL>` | Full Suite + Performance |
+
+---
+
+## Quick Reference
+
+### Agents & Skills
+
+- **Masters**: `orchestrator`, `project-planner`, `security-auditor`, `frontend-specialist`, `backend-specialist`
+- **Key Skills**: `clean-code`, `brainstorming`, `app-builder`, `frontend-design`, `plan-writing`
+
+### Key Scripts
+
+- `checklist.py` - Priority-based validation
+- `verify_all.py` - Comprehensive verification

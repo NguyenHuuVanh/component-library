@@ -1,0 +1,167 @@
+'use client';
+
+import type { TrendChartProps } from '@/types/expense-dashboard';
+import { formatCurrency } from '@/data/expense-dashboard-mock';
+import { format, parseISO } from 'date-fns';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from 'recharts';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/shadcn-ui/card';
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    name: string;
+    value: number;
+    color: string;
+    dataKey: string;
+  }>;
+  label?: string;
+  currency?: string;
+}
+
+function CustomTooltip({ active, payload, label, currency = 'VND' }: CustomTooltipProps) {
+  if (!active || !payload || payload.length === 0) return null;
+
+  return (
+    <div className="bg-white/95 backdrop-blur-sm rounded-lg border shadow-lg p-3">
+      <p className="text-xs font-medium text-gray-500 mb-2">
+        {label && format(parseISO(label), 'dd/MM/yyyy')}
+      </p>
+      <div className="space-y-1">
+        {payload.map((entry, index) => (
+          <div key={index} className="flex items-center gap-2">
+            <div
+              className="w-2.5 h-2.5 rounded-full"
+              style={{ backgroundColor: entry.color }}
+            />
+            <span className="text-xs text-gray-600 capitalize">
+              {entry.name === 'income' ? 'Thu' : 'Chi'}:
+            </span>
+            <span className="text-xs font-semibold" style={{ color: entry.color }}>
+              {formatCurrency(entry.value, currency)}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Loading skeleton
+function TrendChartSkeleton() {
+  return (
+    <Card>
+      <CardHeader>
+        <div className="h-6 w-40 bg-gray-200 rounded animate-pulse" />
+      </CardHeader>
+      <CardContent>
+        <div className="h-[300px] bg-gray-100 rounded animate-pulse" />
+      </CardContent>
+    </Card>
+  );
+}
+
+export function TrendChart({ data, currency = 'VND', isLoading }: TrendChartProps) {
+  if (isLoading) {
+    return <TrendChartSkeleton />;
+  }
+
+  // Format data for chart
+  const chartData = data.map((item) => ({
+    ...item,
+    date: item.date,
+    dateLabel: format(parseISO(item.date), 'dd/MM'),
+  }));
+
+  // Calculate totals for legend
+  const totalIncome = data.reduce((sum, item) => sum + item.income, 0);
+  const totalExpense = data.reduce((sum, item) => sum + item.expense, 0);
+
+  return (
+    <Card className="overflow-hidden">
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base font-semibold">Xu hướng chi tiêu</CardTitle>
+          <div className="flex items-center gap-4 text-xs">
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-full bg-green-500" />
+              <span className="text-gray-600">Thu: {formatCurrency(totalIncome, currency)}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-full bg-red-500" />
+              <span className="text-gray-600">Chi: {formatCurrency(totalExpense, currency)}</span>
+            </div>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="pt-0">
+        <div className="h-[300px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart
+              data={chartData}
+              margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+            >
+              <defs>
+                <linearGradient id="incomeGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#22C55E" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="#22C55E" stopOpacity={0.05} />
+                </linearGradient>
+                <linearGradient id="expenseGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#EF4444" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="#EF4444" stopOpacity={0.05} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
+              <XAxis
+                dataKey="dateLabel"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 11, fill: '#9CA3AF' }}
+                dy={10}
+                interval="preserveStartEnd"
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 11, fill: '#9CA3AF' }}
+                tickFormatter={(value) => {
+                  if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
+                  if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
+                  return value;
+                }}
+                dx={-10}
+              />
+              <Tooltip content={<CustomTooltip currency={currency} />} />
+              <Area
+                type="monotone"
+                dataKey="income"
+                name="income"
+                stroke="#22C55E"
+                strokeWidth={2}
+                fill="url(#incomeGradient)"
+                animationDuration={1000}
+              />
+              <Area
+                type="monotone"
+                dataKey="expense"
+                name="expense"
+                stroke="#EF4444"
+                strokeWidth={2}
+                fill="url(#expenseGradient)"
+                animationDuration={1000}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
